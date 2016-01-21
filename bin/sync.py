@@ -47,7 +47,6 @@ def main(output_dir):
     Scans are arranged into subdirectories, named by
     the scanner they came from.
     """
-    print(output_dir)
     for doxie in DoxieScanner.discover():
         sync_doxie_to_directory(doxie, output_dir)
 
