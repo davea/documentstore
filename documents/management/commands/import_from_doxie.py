@@ -1,0 +1,44 @@
+import logging
+from tempfile import TemporaryDirectory
+import os
+
+from django.core.management.base import BaseCommand
+from django.core.files import File
+
+import doxieapi
+
+from documents.models import Document
+
+log = logging.getLogger(__name__)
+
+class Command(BaseCommand):
+    def handle(self, *args, **kwargs):
+        log.debug("Searching for scanners:")
+        scans_to_delete = []
+        for scanner in doxieapi.DoxieScanner.discover():
+            log.debug(scanner.name)
+            for scan in scanner.scans:
+                if not Document.objects.filter(doxieapi_scan_json=scan).exists():
+                    self.import_new_scan(scanner, scan)
+                elif Document.objects.filter(doxieapi_scan_json=scan, imported_ok=True).exists():
+                    log.debug("{} has been imported and marked as OK, will delete".format(scan['name']))
+                    scans_to_delete.append(scan['name'])
+                else:
+                    log.debug("{} has already been imported but not yet marked as OK.".format(scan['name']))
+        if scans_to_delete:
+            log.debug("Deleting {} scans...".format(len(scans_to_delete)))
+            if scanner.delete_scans(scans_to_delete):
+                log.debug("...done.")
+            else:
+                log.debug("...failed.")
+
+    def import_new_scan(self, scanner, scan):
+        log.debug("Attempting to import scan {}".format(scan['name']))
+        with TemporaryDirectory() as tmppath:
+            scanpath = scanner.download_scan(scan['name'], tmppath)
+            log.debug("Saved to {}".format(scanpath))
+            with open(scanpath, 'rb') as f:
+                file = File(f)
+                document = Document.objects.create(doxieapi_scan_json=scan, file=file, source=scanner.name)
+            log.debug("Created Document id {} from {}".format(document.id, scan['name']))
+        return True
