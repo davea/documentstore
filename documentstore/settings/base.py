@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'documents',
+    'doxie',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -129,6 +130,10 @@ LOGGING = {
         'documents': {
             'handlers': ['console'],
             'level': 'DEBUG' if DEBUG else 'WARNING',
-        }
+        },
+        'doxie': {
+            'handlers': ['console'],
+            'level': 'DEBUG' if DEBUG else 'WARNING',
+        },
     },
 }
