@@ -17,6 +17,10 @@ server {
         alias /usr/home/documentstore/collected_static;
     }
 
+    location /media {
+        alias /usr/home/documentstore/documents;
+    }
+
     location / {
         # checks for static file, if not found proxy to app
         try_files $uri @proxy_to_app;

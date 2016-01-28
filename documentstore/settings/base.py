@@ -108,6 +108,8 @@ STATICFILES_DIRS = (
     os.path.join(PROJECT_DIR, "static"),
 )
 
+MEDIA_URL = '/media/'
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
