@@ -1,0 +1,10 @@
+# This is service definition for supervisor to control gunicorn
+[program:gunicorn]
+command=/usr/home/documentstore/venv-documentstore/bin/gunicorn -w 2 -b 127.0.0.1:8000 --access-logfile=/var/log/gunicorn/access.log --error-logfile=/var/log/gunicorn/error.log documentstore.wsgi
+directory=/usr/home/documentstore/documentstore
+environment=DJANGO_SETTINGS_MODULE=documentstore.settings.production,LANG=en_GB.UTF-8,LC_ALL=en_GB.UTF-8
+user=documentstore
+autostart=true
+autorestart=true
+stdout_logfile=/var/log/supervisor/gunicorn.stdout
+stderr_logfile=/var/log/supervisor/gunicorn.stderr
