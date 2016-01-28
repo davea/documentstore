@@ -8,3 +8,5 @@ $VENVDIR/bin/pip install -r $APPDIR/requirements.txt
 
 $VENVDIR/bin/python $APPDIR/manage.py migrate
 $VENVDIR/bin/python $APPDIR/manage.py collectstatic --noinput
+
+sudo /usr/local/sbin/restart_supervisord.sh
