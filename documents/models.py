@@ -12,7 +12,9 @@ class Document(models.Model):
     # Fields relating to the import and storage of the document
     source = models.CharField(max_length=128, default="Manually imported", help_text="How this document made its way into the system")
     imported = models.DateTimeField(auto_now_add=True)
-    file = models.FileField()
+    # Using a lambda that simply returns the suggested filename allows us to
+    # specify its subdir via File().name.
+    file = models.FileField(upload_to=lambda i, f: f)
 
     # Fields specific to documents imported using doxieapi
     doxieapi_scan_json = JSONField(blank=True, null=True)
