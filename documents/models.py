@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.postgres.fields import JSONField
+from django.conf import settings
 
 # Using a function that simply returns the suggested filename allows us to
 # specify its subdir via File().name.
@@ -15,6 +16,7 @@ class Document(models.Model):
     other_pages = models.ManyToManyField('self', blank=True)
 
     # Fields relating to the import and storage of the document
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.SET_NULL)
     source = models.CharField(max_length=128, default="Manually imported", help_text="How this document made its way into the system")
     imported = models.DateTimeField(auto_now_add=True)
     file = models.FileField(upload_to=document_file_upload_path)
