@@ -18,6 +18,7 @@ class Document(models.Model):
     source = models.CharField(max_length=128, default="Manually imported", help_text="How this document made its way into the system")
     imported = models.DateTimeField(auto_now_add=True)
     file = models.FileField(upload_to=document_file_upload_path)
+    filehash = models.CharField(max_length=128, blank=True, null=True)
     original_kept = models.BooleanField(default=True, help_text="Whether the original physical copy of this document has been kept")
     original_location = models.CharField(max_length=256, blank=True, null=True, help_text="Where the physical copy of this document is kept")
 

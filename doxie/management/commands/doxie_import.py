@@ -1,6 +1,7 @@
 import logging
 from tempfile import TemporaryDirectory
 import os
+from hashlib import sha1
 
 from django.core.management.base import BaseCommand
 from django.core.files import File
@@ -44,6 +45,7 @@ class Command(BaseCommand):
             with open(scanpath, 'rb') as f:
                 file = File(f)
                 file.name = os.path.join("scans", scanner.name, os.path.basename(scanpath))
-                document = Document.objects.create(doxieapi_scan_json=scan, file=file, source=scanner.name)
+                filehash = sha1(file.read()).hexdigest()
+                document = Document.objects.create(doxieapi_scan_json=scan, file=file, filehash=filehash, source=scanner.name)
             log.debug("Created Document id {} from {}".format(document.id, scan['name']))
         return True
