@@ -4,6 +4,7 @@ import os
 
 from django.core.management.base import BaseCommand
 from django.core.files import File
+from django.conf import settings
 
 import doxieapi
 
@@ -26,11 +27,14 @@ class Command(BaseCommand):
                 else:
                     log.debug("{} has already been imported but not yet marked as OK.".format(scan['name']))
         if scans_to_delete:
-            log.debug("Deleting {} scans...".format(len(scans_to_delete)))
-            if scanner.delete_scans(scans_to_delete):
-                log.debug("...done.")
+            if not settings.DEBUG:
+                log.debug("Deleting {} scans...".format(len(scans_to_delete)))
+                if scanner.delete_scans(scans_to_delete):
+                    log.debug("...done.")
+                else:
+                    log.debug("...failed.")
             else:
-                log.debug("...failed.")
+                log.debug("Not deleting {} scans because DEBUG = True".format(len(scans_to_delete)))
 
     def import_new_scan(self, scanner, scan):
         log.debug("Attempting to import scan {}".format(scan['name']))
