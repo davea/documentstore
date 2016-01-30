@@ -3,9 +3,10 @@ from tempfile import TemporaryDirectory
 import os
 from hashlib import sha1
 
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from django.core.files import File
 from django.conf import settings
+from django.contrib.auth import get_user_model
 
 import doxieapi
 
@@ -14,16 +15,24 @@ from documents.models import Document
 log = logging.getLogger(__name__)
 
 class Command(BaseCommand):
+    user = None
+
+    def add_arguments(self, parser):
+        parser.add_argument("username",
+            type=str,
+            help="The username to assign these documents to")
+
     def handle(self, *args, **kwargs):
+        self._set_user(**kwargs)
         log.debug("Searching for scanners:")
         scans_to_delete = []
         for scanner in doxieapi.DoxieScanner.discover():
             log.debug(scanner.name)
             for scan in scanner.scans:
-                if not Document.objects.filter(doxieapi_scan_json=scan).exists():
+                if not Document.objects.filter(owner=self.user, doxieapi_scan_json=scan).exists():
                     self.import_new_scan(scanner, scan)
-                elif Document.objects.filter(doxieapi_scan_json=scan, imported_ok=True).exists():
-                    log.debug("{} has been imported and marked as OK, will delete".format(scan['name']))
+                elif Document.objects.filter(owner=self.user, doxieapi_scan_json=scan, imported_ok=True).exists():
+                    log.debug("{} has been imported and marked as OK by {}, will delete".format(scan['name'], self.user.username))
                     scans_to_delete.append(scan['name'])
                 else:
                     log.debug("{} has already been imported but not yet marked as OK.".format(scan['name']))
@@ -44,8 +53,24 @@ class Command(BaseCommand):
             log.debug("Saved to {}".format(scanpath))
             with open(scanpath, 'rb') as f:
                 file = File(f)
-                file.name = os.path.join("scans", scanner.name, os.path.basename(scanpath))
+                file.name = self._get_file_path(scanner.name, scanpath)
                 filehash = sha1(file.read()).hexdigest()
-                document = Document.objects.create(doxieapi_scan_json=scan, file=file, filehash=filehash, source=scanner.name)
+                document = Document.objects.create(owner=self.user, doxieapi_scan_json=scan, file=file, filehash=filehash, source=scanner.name)
             log.debug("Created Document id {} from {}".format(document.id, scan['name']))
         return True
+
+    def _get_file_path(self, source, original_file_path):
+        return os.path.join(
+            "document__file",
+            self.user.username,
+            "scans",
+            source,
+            os.path.basename(original_file_path)
+        )
+
+    def _set_user(self, **kwargs):
+        UserModel = get_user_model()
+        try:
+            self.user = UserModel.objects.get(username=kwargs['username'])
+        except UserModel.DoesNotExist:
+            raise CommandError("User with username '{}' doesn't exist.".format(kwargs['username']))
