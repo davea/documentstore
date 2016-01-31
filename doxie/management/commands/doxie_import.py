@@ -1,6 +1,5 @@
 import logging
 from tempfile import TemporaryDirectory
-import os
 from hashlib import sha1
 
 from django.core.management.base import BaseCommand, CommandError
@@ -53,20 +52,10 @@ class Command(BaseCommand):
             log.debug("Saved to {}".format(scanpath))
             with open(scanpath, 'rb') as f:
                 file = File(f)
-                file.name = self._get_file_path(scanner.name, scanpath)
                 filehash = sha1(file.read()).hexdigest()
                 document = Document.objects.create(owner=self.user, doxieapi_scan_json=scan, file=file, filehash=filehash, source=scanner.name)
             log.debug("Created Document id {} from {}".format(document.id, scan['name']))
         return True
-
-    def _get_file_path(self, source, original_file_path):
-        return os.path.join(
-            "document__file",
-            self.user.username,
-            "scans",
-            source,
-            os.path.basename(original_file_path)
-        )
 
     def _set_user(self, **kwargs):
         UserModel = get_user_model()

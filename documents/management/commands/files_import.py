@@ -1,10 +1,8 @@
 import logging
-import os
 from hashlib import sha1
 
 from django.core.management.base import LabelCommand, CommandError
 from django.core.files import File
-from django.db import transaction
 from django.contrib.auth import get_user_model
 
 from documents.models import Document
@@ -35,7 +33,6 @@ class Command(LabelCommand):
     def handle_label(self, filepath, **kwargs):
         with open(filepath, 'rb') as f:
             file = File(f)
-            file.name = self._get_file_path(kwargs['source'], os.path.basename(filepath))
             filehash = sha1(file.read()).hexdigest()
             if not kwargs['force'] and Document.objects.filter(owner=self.user, filehash=filehash).exists():
                 msg = "This file ({}) already seems to have been imported. Please re-run " \
@@ -47,15 +44,6 @@ class Command(LabelCommand):
                 raise CommandError(msg.format(filepath))
             document = Document.objects.create(owner=self.user, file=file, filehash=filehash, source=kwargs['source'])
         log.debug("Created Document id {} from {}".format(document.id, filepath))
-
-    def _get_file_path(self, source, original_file_path):
-        return os.path.join(
-            "document__file",
-            self.user.username,
-            "imports",
-            source,
-            os.path.basename(original_file_path)
-        )
 
     def _set_user(self, **kwargs):
         UserModel = get_user_model()

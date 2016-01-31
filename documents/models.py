@@ -1,11 +1,27 @@
+import os
+
 from django.db import models
 from django.contrib.postgres.fields import JSONField
 from django.conf import settings
+from django.utils.text import slugify
 
 # Using a function that simply returns the suggested filename allows us to
 # specify its subdir via File().name.
 def document_file_upload_path(instance, filename):
-    return filename
+    username = instance.owner.username if instance.owner else "nobody"
+    if instance.doxieapi_scan_json:
+        category = "scans"
+    elif instance.source == Document._meta.get_field("source").default:
+        category = "uploads"
+    else:
+        category = "imports"
+    return os.path.join(
+        "document__file",
+        username,
+        category,
+        slugify(instance.source),
+        os.path.basename(filename)
+    )
 
 class Document(models.Model):
     # Fields describing the content of the document
@@ -17,7 +33,7 @@ class Document(models.Model):
 
     # Fields relating to the import and storage of the document
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.SET_NULL)
-    source = models.CharField(max_length=128, default="Manually imported", help_text="How this document made its way into the system")
+    source = models.CharField(max_length=128, default="Manually uploaded", help_text="How this document made its way into the system")
     imported = models.DateTimeField(auto_now_add=True)
     file = models.FileField(upload_to=document_file_upload_path)
     filehash = models.CharField(max_length=128, blank=True, null=True)
