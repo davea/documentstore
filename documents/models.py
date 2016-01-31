@@ -1,13 +1,27 @@
 import os
+from logging import getLogger
 
 from django.db import models
 from django.contrib.postgres.fields import JSONField
 from django.conf import settings
+from django.core.files.base import ContentFile
 from django.utils.text import slugify
 
-# Using a function that simply returns the suggested filename allows us to
-# specify its subdir via File().name.
+from PIL import Image
+
+log = getLogger(__name__)
+
 def document_file_upload_path(instance, filename):
+    return get_document_upload_path(instance, filename, thumbnail=False)
+
+def document_file_thumbnail_upload_path(instance, filename=None):
+    if filename is None:
+        filename = os.path.basename(instance.file.name)
+    # Thumbnails are always JPEGs
+    filename = ".".join(filename.split(".")[:-1] + ['jpg'])
+    return get_document_upload_path(instance, filename, thumbnail=True)
+
+def get_document_upload_path(instance, filename, thumbnail):
     username = instance.owner.username if instance.owner else "nobody"
     if instance.doxieapi_scan_json:
         category = "scans"
@@ -15,13 +29,17 @@ def document_file_upload_path(instance, filename):
         category = "uploads"
     else:
         category = "imports"
-    return os.path.join(
+    parts = [
         "document__file",
         username,
         category,
         slugify(instance.source),
         os.path.basename(filename)
-    )
+    ]
+    if thumbnail:
+        parts.insert(-1, "thumbnails")
+    return os.path.join(*parts)
+
 
 class Document(models.Model):
     # Fields describing the content of the document
@@ -37,6 +55,7 @@ class Document(models.Model):
     imported = models.DateTimeField(auto_now_add=True)
     file = models.FileField(upload_to=document_file_upload_path)
     filehash = models.CharField(max_length=128, blank=True, null=True)
+    file_thumbnail = models.ImageField(blank=True, null=True, upload_to=document_file_thumbnail_upload_path)
     original_kept = models.BooleanField(default=True, help_text="Whether the original physical copy of this document has been kept")
     original_location = models.CharField(max_length=256, blank=True, null=True, help_text="Where the physical copy of this document is kept")
 
@@ -46,3 +65,26 @@ class Document(models.Model):
 
     class Meta:
         ordering = ('-imported', )
+
+    def save(self, *args, **kwargs):
+        self._generate_thumbnail()
+        return super().save(*args, **kwargs)
+
+    def _generate_thumbnail(self):
+        if not self.file or self.file_thumbnail:
+            # We don't need a thumbnail, or already have one
+            return
+        image_types = ['jpg', 'jpeg', 'png']
+        if self.file.name.split(".")[-1].lower() not in image_types:
+            # File isn't thumbnailable
+            return
+        try:
+            image = Image.open(self.file)
+            image.thumbnail((400, 400), Image.ANTIALIAS)
+        except OSError:
+            log.warning("_generate_thumbnail: Couldn't read image for Document#{} ({}).".format(self.id, self.file.name))
+            return
+        contentfile = ContentFile(b'')
+        image.save(contentfile, 'jpeg')
+        filepath = document_file_thumbnail_upload_path(self)
+        self.file_thumbnail.save(filepath, contentfile, save=False)
