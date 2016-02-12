@@ -1,5 +1,14 @@
 {% extends "base.html" %}
 {% block body %}
+    <nav>
+        <ul class="tags">
+            {% for tag in view.all_tags %}
+                <li>
+                    <a class="tags__tag {% if tag in view.active_tags %}tags__tag--active{% endif %}" href="?tags={{tag}}">{{ tag }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </nav>
     <section class="documents">
         {% for document in document_list %}
             <div class="document {{ document.imported_ok|yesno:"document--imported-ok," }}">
@@ -12,6 +21,9 @@
                 </a>
                 <div class="document__actions">
                     <ul>
+                        {% if document.tags %}
+                            <li><span>{{ document.tags|join:", "}}</span></li>
+                        {% endif %}
                         <li><a href="{% url "admin:documents_document_change" document.id %}">Admin</a></li>
                     </ul>
                 </div>

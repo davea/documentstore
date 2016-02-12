@@ -2,7 +2,7 @@ import os
 from logging import getLogger
 
 from django.db import models
-from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.fields import JSONField, ArrayField
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.utils.text import slugify
@@ -48,6 +48,7 @@ class Document(models.Model):
     time = models.TimeField(blank=True, null=True, help_text="The time printed on the document")
     page_number = models.IntegerField(default=1)
     other_pages = models.ManyToManyField('self', blank=True)
+    tags = ArrayField(models.TextField(blank=True), default=list, blank=True)
 
     # Fields relating to the import and storage of the document
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.SET_NULL)

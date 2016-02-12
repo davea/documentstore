@@ -1,6 +1,8 @@
 body {
     background-color: #eee;
     color: #444;
+    font-family: Helvetica, sans-serif;
+    font-weight: 300;
 }
 
 .document {
@@ -59,8 +61,39 @@ body {
     text-align: center;
 }
 
-.document__actions a {
+.document__actions a, .document__actions span {
     display: inline-block;
     padding: 0.75em;
     text-transform: lowercase;
+}
+
+.tags {
+    padding: 0.5em;
+    margin: 0;
+}
+
+.tags li {
+    padding: 0;
+    margin: 0 0.25em;
+    display: inline;
+}
+
+.tags__tag {
+    display: inline-block;
+    background-color: #ddd;
+    margin-bottom: 0.5em;
+    border-radius: 10px;
+    vertical-align: middle;
+    padding: 0.125em 0.5em;
+    color: black;
+    text-decoration: none;
+    box-shadow: 0 0 1px #777;
+}
+
+.tags__tag:hover {
+    background-color: #c7ffb4;
+}
+
+.tags__tag--active {
+    background-color: #b0dea2;
 }

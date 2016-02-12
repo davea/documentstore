@@ -8,10 +8,10 @@ from .models import Document
 log = getLogger(__name__)
 
 class DocumentAdmin(admin.ModelAdmin):
-    list_display = ('imported', 'file_thumbnail_img', 'author', 'imported_ok')
+    list_display = ('imported', 'file_thumbnail_img', 'author', 'imported_ok', 'tags')
     list_display_links = ('imported', 'file_thumbnail_img')
-    list_editable = ('imported_ok', )
-    list_filter = ('source', 'imported_ok', 'author')
+    list_editable = ('imported_ok', 'tags')
+    list_filter = ('source', 'imported_ok', 'author', 'tags')
     date_hierarchy = 'imported'
     readonly_fields = ('file_img', )
 
