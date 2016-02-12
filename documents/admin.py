@@ -7,11 +7,26 @@ from .models import Document
 
 log = getLogger(__name__)
 
+class DocumentTagListFilter(admin.SimpleListFilter):
+    title = "Tags"
+    parameter_name = 'tags'
+
+    def lookups(self, request, model_admin):
+        return sorted({(y, y) for x in Document.objects.values_list("tags", flat=True).distinct() for y in x}) + [('None', '(None)')]
+
+    def queryset(self, request, queryset):
+        if not self.value():
+            return queryset
+        elif self.value() == 'None':
+            return queryset.filter(tags__len=0)
+        else:
+            return queryset.filter(tags__contains=[self.value()])
+
 class DocumentAdmin(admin.ModelAdmin):
     list_display = ('imported', 'file_thumbnail_img', 'author', 'imported_ok', 'tags')
     list_display_links = ('imported', 'file_thumbnail_img')
     list_editable = ('imported_ok', 'tags')
-    list_filter = ('source', 'imported_ok', 'author', 'tags')
+    list_filter = ('source', 'imported_ok', 'author', DocumentTagListFilter)
     date_hierarchy = 'imported'
     readonly_fields = ('file_img', )
 
