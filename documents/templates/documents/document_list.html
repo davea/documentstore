@@ -1,10 +1,11 @@
 {% extends "base.html" %}
+{% load documents %}
 {% block body %}
     <nav>
         <ul class="tags">
             {% for tag in view.all_tags %}
                 <li>
-                    <a class="tags__tag {% if tag in view.active_tags %}tags__tag--active{% endif %}" href="?tags={{tag}}">{{ tag }}</a>
+                    <a class="tags__tag {% if tag in view.active_tags %}tags__tag--active{% endif %}" href="{% querystring_for_tag tag %}">{{ tag }}</a>
                 </li>
             {% endfor %}
         </ul>
