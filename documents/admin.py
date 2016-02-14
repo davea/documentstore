@@ -23,7 +23,7 @@ class DocumentTagListFilter(admin.SimpleListFilter):
             return queryset.filter(tags__contains=[self.value()])
 
 class DocumentAdmin(admin.ModelAdmin):
-    list_display = ('imported', 'file_thumbnail_img', 'author', 'imported_ok', 'tags')
+    list_display = ('imported', 'file_thumbnail_img', 'imported_ok', 'tags')
     list_display_links = ('imported', 'file_thumbnail_img')
     list_editable = ('imported_ok', 'tags')
     list_filter = ('source', 'imported_ok', 'author', DocumentTagListFilter)
@@ -33,7 +33,7 @@ class DocumentAdmin(admin.ModelAdmin):
     def file_thumbnail_img(self, document):
         if document.file_thumbnail:
             return format_html(
-                """<img src="{}" style="max-height: 200px; max-width: 400px" />""",
+                """<img src="{}" style="max-height: 400px; max-width: 800px" />""",
                 document.file_thumbnail.url
             )
     file_thumbnail_img.short_description = 'Thumbnail'
