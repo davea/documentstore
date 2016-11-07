@@ -1,7 +1,8 @@
 doxieapi==0.0.2
 click==6.6
-Django==1.9.6
-psycopg2==2.6.1
-PyYAML==3.11
+Django==1.10.3
+psycopg2==2.6.2
+PyYAML==3.12
 gunicorn==19.6.0
-Pillow==3.2.0
+Pillow==3.4.2
+pip==9.0.1
