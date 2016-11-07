@@ -10,25 +10,7 @@
             {% endfor %}
         </ul>
     </nav>
-    <section class="documents">
-        {% for document in document_list %}
-            <div class="document {{ document.imported_ok|yesno:"document--imported-ok," }}">
-                <a href="{{ document.file.url }}">
-                    {% if document.file_thumbnail %}
-                        <img src="{{ document.file_thumbnail.url }}">
-                    {% else %}
-                        <span class="document__missing-thumbnail">?</span>
-                    {% endif %}
-                </a>
-                <div class="document__actions">
-                    <ul>
-                        {% if document.tags %}
-                            <li><span>{{ document.tags|join:", "}}</span></li>
-                        {% endif %}
-                        <li><a href="{% url "admin:documents_document_change" document.id %}">Admin</a></li>
-                    </ul>
-                </div>
-            </div>
-        {% endfor %}
+    <section class="documents" id="documents">
+        {% include "documents/document_list_ajax.html" %}
     </section>
 {% endblock body %}

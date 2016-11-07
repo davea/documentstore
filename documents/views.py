@@ -6,6 +6,7 @@ from .models import Document
 
 class DocumentListView(LoginRequiredMixin, ListView):
     model = Document
+    paginate_by = 25
 
     def get_queryset(self):
         return super().get_queryset().filter(owner=self.request.user, tags__contains=self.active_tags)
@@ -17,3 +18,6 @@ class DocumentListView(LoginRequiredMixin, ListView):
     @cached_property
     def active_tags(self):
         return [t for t in self.request.GET.get('tags', '').split(',') if t]
+
+class DocumentListViewAJAX(DocumentListView):
+    template_name = "documents/document_list_ajax.html"

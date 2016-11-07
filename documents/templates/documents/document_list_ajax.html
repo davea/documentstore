@@ -1,0 +1,23 @@
+{% for document in document_list %}
+    {% if forloop.first and page_obj.has_next %}
+        <div class="document {{ document.imported_ok|yesno:"document--imported-ok," }}" ic-append-from="{% url "documents:document_list_ajax" %}?page={{ page_obj.next_page_number }}" ic-trigger-on="scrolled-into-view" ic-target="#documents">
+    {% else %}
+        <div class="document {{ document.imported_ok|yesno:"document--imported-ok," }}">
+    {% endif %}
+        <a href="{{ document.file.url }}">
+            {% if document.file_thumbnail %}
+                <img src="{{ document.file_thumbnail.url }}">
+            {% else %}
+                <span class="document__missing-thumbnail">?</span>
+            {% endif %}
+        </a>
+        <div class="document__actions">
+            <ul>
+                {% if document.tags %}
+                    <li><span>{{ document.tags|join:", "}}</span></li>
+                {% endif %}
+                <li><a href="{% url "admin:documents_document_change" document.id %}">Admin</a></li>
+            </ul>
+        </div>
+    </div>
+{% endfor %}
