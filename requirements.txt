@@ -6,3 +6,4 @@ PyYAML==3.12
 gunicorn==19.6.0
 Pillow==3.4.2
 pip==9.0.1
+django-query-parameters==0.2.2
