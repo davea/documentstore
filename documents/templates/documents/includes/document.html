@@ -1,10 +1,10 @@
 {% load query_parameters %}
-{% for document in document_list %}
-    {% if forloop.first and page_obj.has_next %}
-        <div class="document {{ document.imported_ok|yesno:"document--imported-ok," }}" ic-append-from="{% url "documents:document_list_ajax" %}?{% set_query_parameters page=page_obj.next_page_number %}" ic-trigger-on="scrolled-into-view" ic-target="#documents">
-    {% else %}
-        <div class="document {{ document.imported_ok|yesno:"document--imported-ok," }}">
-    {% endif %}
+{% if forloop.first and page_obj.has_next %}
+    <div class="document {{ document.imported_ok|yesno:"document--imported-ok," }}" ic-append-from="{% url "documents:document_list_ajax" %}?{% set_query_parameters page=page_obj.next_page_number %}" ic-trigger-on="scrolled-into-view" ic-target="#documents">
+{% else %}
+    <div class="document">
+{% endif %}
+        {% include "documents/includes/imported_status_button.html" %}
         <a href="{{ document.file.url }}">
             {% if document.file_thumbnail %}
                 <img src="{{ document.file_thumbnail.url }}">
@@ -21,4 +21,3 @@
             </ul>
         </div>
     </div>
-{% endfor %}

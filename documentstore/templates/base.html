@@ -3,6 +3,7 @@
     <head>
         <link href="{% static "style.css" %}" rel="stylesheet" type="text/css" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token }}">
         <title>Documents</title>
     </head>
     <body>
@@ -10,4 +11,5 @@
     </body>
     <script src="{% static "vendor/jquery-3.1.1.min.js" %}"></script>
     <script src="{% static "vendor/intercooler-1.0.2.min.js" %}"></script>
+    <script src="{% static "js/main.js" %}"></script>
 </html>

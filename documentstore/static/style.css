@@ -17,19 +17,28 @@ body {
     position: relative;
 }
 
-.document--imported-ok::before {
-    content: "OK";
+.document__imported-status {
     position: absolute;
     color: white;
     top: 6px;
     right: 6px;
-    background-color: #97EE5C;
     height: 48px;
     width: 48px;
     border-radius: 24px;
     line-height: 48px;
     text-align: center;
     box-shadow: 0 0 5px silver;
+    text-decoration: none;
+}
+
+.document__imported-status--mark-ok {
+  cursor: pointer;
+  background-color: #F06292;
+}
+
+.document__imported-status--ok {
+  display: none;
+  background-color: #97EE5C;
 }
 
 .document__missing-thumbnail {
@@ -50,7 +59,7 @@ body {
     background-color: rgba(240, 240, 240, 0.9);
 }
 
-.document:hover .document__actions {
+.document:hover .document__actions, .document:hover .document__imported-status {
     display: inline-block;
 }
 
