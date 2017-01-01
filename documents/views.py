@@ -10,11 +10,15 @@ class DocumentListView(LoginRequiredMixin, ListView):
     paginate_by = 25
 
     def get_queryset(self):
-        return super().get_queryset().filter(owner=self.request.user, tags__contains=self.active_tags)
+        user_docs = super().get_queryset().filter(owner=self.request.user)
+        if 'untagged' in self.active_tags:
+            return user_docs.filter(tags__len=0)
+        else:
+            return user_docs.filter(tags__contains=self.active_tags)
 
     @cached_property
     def all_tags(self):
-        return sorted({y for x in Document.objects.values_list("tags", flat=True).distinct() for y in x})
+        return sorted({y for x in Document.objects.values_list("tags", flat=True).distinct() for y in x}) + ['untagged']
 
     @cached_property
     def active_tags(self):
