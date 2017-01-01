@@ -1,6 +1,7 @@
 {% load query_parameters %}
+{% del_query_parameters ic-request ic-id ic-target-id ic-current-url _method as=params %}
 <div class="document" {% if forloop.first and page_obj.has_next %}
-    ic-append-from="{% url "documents:document_list_ajax" %}?{% set_query_parameters page=page_obj.next_page_number %}"
+    ic-append-from="{% url "documents:document_list_ajax" %}?{% set_query_parameters with=params page=page_obj.next_page_number %}"
     ic-trigger-on="scrolled-into-view"
     ic-target="#documents"
 {% endif %}>
