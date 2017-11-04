@@ -6,7 +6,7 @@
     ic-target="#documents"
 {% endif %}>
         {% include "documents/includes/imported_status_button.html" %}
-        <a href="{{ document.file.url }}">
+        <a href="{{ document.file.url }}" data-featherlight="image">
             {% if document.file_thumbnail %}
                 <img src="{{ document.file_thumbnail.url }}">
             {% else %}
