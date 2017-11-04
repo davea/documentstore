@@ -7,13 +7,14 @@ name = "pypi"
 
 doxieapi = "*"
 click = "*"
-Django = "*"
+django = "*"
 "psycopg2" = "*"
-PyYAML = "*"
+pyyaml = "*"
 gunicorn = "*"
-Pillow = "*"
+pillow = "*"
 "django-query-parameters" = "*"
 
 
 [dev-packages]
 honcho = "*"
+pylint = "*"
