@@ -7,6 +7,11 @@ from .models import Document
 
 log = getLogger(__name__)
 
+class DocumentsAdminSite(admin.AdminSite):
+    site_header = 'Document Store'
+
+admin_site = DocumentsAdminSite(name='documentsadmin')
+
 class DocumentTagListFilter(admin.SimpleListFilter):
     title = "Tags"
     parameter_name = 'tags'
@@ -46,4 +51,4 @@ class DocumentAdmin(admin.ModelAdmin):
             )
     file_img.short_description = 'Full-size Image'
 
-admin.site.register(Document, DocumentAdmin)
+admin_site.register(Document, DocumentAdmin)
