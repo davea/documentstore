@@ -69,6 +69,7 @@ class Document(models.Model):
 
     def save(self, *args, **kwargs):
         self._generate_thumbnail()
+        self.tags = sorted(self.tags)
         return super().save(*args, **kwargs)
 
     def _generate_thumbnail(self):
