@@ -16,5 +16,7 @@ pillow = "*"
 
 
 [dev-packages]
+
 honcho = "*"
 pylint = "*"
+pytest = "*"
