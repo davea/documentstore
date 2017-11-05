@@ -5,6 +5,10 @@ body {
     font-weight: 300;
 }
 
+a {
+    cursor: pointer;
+}
+
 .document {
     box-shadow: 0 0 5px silver;
     border: solid 6px white;
@@ -32,7 +36,6 @@ body {
 }
 
 .document__imported-status--mark-ok {
-  cursor: pointer;
   background-color: #F06292;
 }
 

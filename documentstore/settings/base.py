@@ -31,6 +31,7 @@ INSTALLED_APPS = [
 
     'query_parameters',
     'mathfilters',
+    'imagekit',
 
     'documents',
     'doxie',

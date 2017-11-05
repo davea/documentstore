@@ -7,8 +7,8 @@
 {% endif %}>
         {% include "documents/includes/imported_status_button.html" %}
         <a href="{{ document.file.url }}" data-featherlight="image">
-            {% if document.file_thumbnail %}
-                <img src="{{ document.file_thumbnail.url }}" width="{{ document.file_thumbnail_width|div:2 }}" height="{{ document.file_thumbnail_height|div:2 }}">
+            {% if document.file %}
+                <img src="{{ document.file_thumbnail.url }}" width="{{ document.file_thumbnail.width|div:2 }}" height="{{ document.file_thumbnail.height|div:2 }}">
             {% else %}
                 <span class="document__missing-thumbnail">?</span>
             {% endif %}
@@ -18,7 +18,11 @@
                 <li>
                     {% include "documents/includes/tags_form.html" with form=document|tags_form %}
                 </li>
-                <li><a href="{% url "admin:documents_document_change" document.id %}">Admin</a></li>
+                <li>
+                    <a ic-target="closest .document" ic-replace-target="true" ic-post-to="{% url "documents:document_image_rotate" pk=document.id angle=90 %}">↪️</a>
+                    <a href="{% url "admin:documents_document_change" document.id %}">Admin</a>
+                    <a ic-target="closest .document" ic-replace-target="true" ic-post-to="{% url "documents:document_image_rotate" pk=document.id angle=270 %}">↩️</a>
+                </li>
             </ul>
         </div>
     </div>

@@ -1,3 +1,7 @@
+from logging import getLogger
+
+from django.http import Http404
+from django.core.files.base import ContentFile
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
@@ -5,8 +9,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.functional import cached_property
 from django.urls import reverse
 
-from .models import Document
+from PIL import Image
+
+from .models import Document, document_file_upload_path
 from .forms import DocumentTagsForm
+
+log = getLogger(__name__)
 
 
 class DocumentOwnerMixin(LoginRequiredMixin):
@@ -60,3 +68,22 @@ class DocumentTagsEdit(DocumentOwnerMixin, UpdateView):
     @property
     def saved(self):
         return 'saved' in self.request.GET
+
+
+class DocumentImageRotate(DocumentOwnerMixin, DetailView):
+    model = Document
+    template_name = "documents/includes/document.html"
+
+    def post(self, request, *args, **kwargs):
+        document = self.get_object()
+
+        angle = int(kwargs.get("angle"))
+        image = Image.open(document.file)
+        image = image.rotate(angle, Image.BICUBIC, True)
+
+        contentfile = ContentFile(b'')
+        image.save(contentfile, 'jpeg')
+        filepath = document_file_upload_path(document, document.file.name)
+        document.file.save(filepath, contentfile, save=True)
+
+        return self.get(request, *args, **kwargs)
