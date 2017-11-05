@@ -36,11 +36,6 @@ body {
   background-color: #F06292;
 }
 
-.document__imported-status--ok {
-  display: none;
-  background-color: #97EE5C;
-}
-
 .document__missing-thumbnail {
     width: 200px;
     height: 200px;
