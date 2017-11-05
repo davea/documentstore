@@ -9,8 +9,10 @@
 
     $("#documents").on("mouseenter", ".document", function() {
       var $input = $(this).find("input[name=tags]");
-      $input.focus();
-      $input.val($input.val());
+      if ($input.visible()) {
+        $input.focus();
+        $input.val($input.val());
+      }
     });
   });
 })(window.jQuery);
