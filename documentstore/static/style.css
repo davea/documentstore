@@ -71,6 +71,14 @@ body {
     text-transform: lowercase;
 }
 
+.document__tags_form input[type=text] {
+    box-sizing: border-box;
+    width: 95%;
+}
+
+.document__tags_form--saved input[type=text] {
+    background-color: rgb(224, 254, 214);
+}
 .tags {
     padding: 0.5em;
     margin: 0;

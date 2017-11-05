@@ -1,9 +1,12 @@
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
+from django.views.generic.edit import UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.functional import cached_property
+from django.urls import reverse
 
 from .models import Document
+from .forms import DocumentTagsForm
 
 
 class DocumentOwnerMixin(LoginRequiredMixin):
@@ -39,9 +42,21 @@ class DocumentImportedOK(DocumentOwnerMixin, DetailView):
     model = Document
     template_name = "documents/includes/imported_status_button.html"
 
-
     def post(self, request, *args, **kwargs):
         document = self.get_object()
         document.imported_ok = True
         document.save()
         return self.get(request, *args, **kwargs)
+
+
+class DocumentTagsEdit(DocumentOwnerMixin, UpdateView):
+    model = Document
+    form_class = DocumentTagsForm
+    template_name = "documents/includes/tags_form.html"
+
+    def get_success_url(self):
+        return reverse("documents:document_tags_edit", args=[self.object.id]) + "?saved"
+
+    @property
+    def saved(self):
+        return 'saved' in self.request.GET

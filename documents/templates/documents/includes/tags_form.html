@@ -1,0 +1,8 @@
+<form
+    ic-post-to="{% url "documents:document_tags_edit" document.id %}"
+    ic-target="this"
+    ic-remove-class="document__tags_form--saved:1s"
+    class="document__tags_form {{ view.saved|yesno:"document__tags_form--saved,," }}"
+>
+    {{ form.tags }}
+</form>

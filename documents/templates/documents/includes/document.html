@@ -1,4 +1,4 @@
-{% load query_parameters %}
+{% load query_parameters documents %}
 {% del_query_parameters ic-request ic-id ic-target-id ic-current-url _method as=params %}
 <div class="document" {% if forloop.first and page_obj.has_next %}
     ic-append-from="{% url "documents:document_list_ajax" %}?{% set_query_parameters with=params page=page_obj.next_page_number %}"
@@ -15,9 +15,9 @@
         </a>
         <div class="document__actions">
             <ul>
-                {% if document.tags %}
-                    <li><span>{{ document.tags|join:", "}}</span></li>
-                {% endif %}
+                <li>
+                    {% include "documents/includes/tags_form.html" with form=document|tags_form %}
+                </li>
                 <li><a href="{% url "admin:documents_document_change" document.id %}">Admin</a></li>
             </ul>
         </div>

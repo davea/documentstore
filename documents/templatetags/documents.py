@@ -1,5 +1,8 @@
 from django import template
 
+from ..forms import DocumentTagsForm
+from ..models import Document
+
 register = template.Library()
 
 @register.simple_tag(takes_context=True)
@@ -23,3 +26,11 @@ def querystring_for_tag(context, tag):
     elif 'tags' in query:
         query.pop('tags')
     return "?"+query.urlencode(safe=',')
+
+
+@register.filter
+def tags_form(document):
+    """
+    Returns a forms.DocumentTagsForm bound to the given Document
+    """
+    return DocumentTagsForm(instance=document)

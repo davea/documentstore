@@ -6,5 +6,11 @@
         jqXHR.setRequestHeader("X-CSRFToken", csrftoken);
       }
     });
+
+    $("#documents").on("mouseenter", ".document", function() {
+      var $input = $(this).find("input[name=tags]");
+      $input.focus();
+      $input.val($input.val());
+    });
   });
-})(window.jQuery)
+})(window.jQuery);
