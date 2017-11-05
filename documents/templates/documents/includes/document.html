@@ -1,4 +1,4 @@
-{% load query_parameters documents %}
+{% load query_parameters documents mathfilters %}
 {% del_query_parameters ic-request ic-id ic-target-id ic-current-url _method as=params %}
 <div class="document" {% if forloop.first and page_obj.has_next %}
     ic-append-from="{% url "documents:document_list_ajax" %}?{% set_query_parameters with=params page=page_obj.next_page_number %}"
@@ -8,7 +8,7 @@
         {% include "documents/includes/imported_status_button.html" %}
         <a href="{{ document.file.url }}" data-featherlight="image">
             {% if document.file_thumbnail %}
-                <img src="{{ document.file_thumbnail.url }}">
+                <img src="{{ document.file_thumbnail.url }}" width="{{ document.file_thumbnail_width|div:2 }}" height="{{ document.file_thumbnail_height|div:2 }}">
             {% else %}
                 <span class="document__missing-thumbnail">?</span>
             {% endif %}

@@ -13,6 +13,7 @@ pyyaml = "*"
 gunicorn = "*"
 pillow = "*"
 "django-query-parameters" = "*"
+"django-mathfilters" = "*"
 
 
 [dev-packages]

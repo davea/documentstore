@@ -56,7 +56,13 @@ class Document(models.Model):
     imported = models.DateTimeField(auto_now_add=True)
     file = models.FileField(upload_to=document_file_upload_path)
     filehash = models.CharField(max_length=128, blank=True, null=True)
-    file_thumbnail = models.ImageField(blank=True, null=True, upload_to=document_file_thumbnail_upload_path)
+    file_thumbnail = models.ImageField(
+        blank=True, null=True, upload_to=document_file_thumbnail_upload_path,
+        height_field='file_thumbnail_height', width_field='file_thumbnail_width'
+    )
+    file_thumbnail_width = models.IntegerField(blank=True, null=True)
+    file_thumbnail_height = models.IntegerField(blank=True, null=True)
+
     original_kept = models.BooleanField(default=True, help_text="Whether the original physical copy of this document has been kept")
     original_location = models.CharField(max_length=256, blank=True, null=True, help_text="Where the physical copy of this document is kept")
 
@@ -72,8 +78,8 @@ class Document(models.Model):
         self.tags = sorted(self.tags)
         return super().save(*args, **kwargs)
 
-    def _generate_thumbnail(self):
-        if not self.file or self.file_thumbnail:
+    def _generate_thumbnail(self, force=False):
+        if not force and (not self.file or self.file_thumbnail):
             # We don't need a thumbnail, or already have one
             return
         image_types = ['jpg', 'jpeg', 'png']
@@ -82,7 +88,7 @@ class Document(models.Model):
             return
         try:
             image = Image.open(self.file)
-            image.thumbnail((400, 400), Image.ANTIALIAS)
+            image.thumbnail((800, 800), Image.ANTIALIAS)
         except OSError:
             log.warning("_generate_thumbnail: Couldn't read image for Document#{} ({}).".format(self.id, self.file.name))
             return

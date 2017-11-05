@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'query_parameters',
+    'mathfilters',
 
     'documents',
     'doxie',
