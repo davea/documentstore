@@ -5,12 +5,18 @@ from django.utils.functional import cached_property
 
 from .models import Document
 
-class DocumentListView(LoginRequiredMixin, ListView):
+
+class DocumentOwnerMixin(LoginRequiredMixin):
+    def get_queryset(self):
+        return super().get_queryset().filter(owner=self.request.user)
+
+
+class DocumentListView(DocumentOwnerMixin, ListView):
     model = Document
     paginate_by = 25
 
     def get_queryset(self):
-        user_docs = super().get_queryset().filter(owner=self.request.user)
+        user_docs = super().get_queryset()
         if 'untagged' in self.active_tags:
             return user_docs.filter(tags__len=0)
         else:
@@ -24,15 +30,15 @@ class DocumentListView(LoginRequiredMixin, ListView):
     def active_tags(self):
         return [t for t in self.request.GET.get('tags', '').split(',') if t]
 
+
 class DocumentListViewAJAX(DocumentListView):
     template_name = "documents/includes/list.html"
 
-class DocumentImportedOK(LoginRequiredMixin, DetailView):
+
+class DocumentImportedOK(DocumentOwnerMixin, DetailView):
     model = Document
     template_name = "documents/includes/imported_status_button.html"
 
-    def get_queryset(self):
-        return super().get_queryset().filter(owner=self.request.user)
 
     def post(self, request, *args, **kwargs):
         document = self.get_object()
