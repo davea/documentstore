@@ -1,3 +1,3 @@
 {% if not document.imported_ok %}
-  <a ic-post-to="{% url "documents:document_imported_ok" document.id %}" ic-target="this" ic-replace-target="true" class="document__imported-status document__imported-status--mark-ok">OK?</span>
+  <a href="" ic-post-to="{% url "documents:document_imported_ok" document.id %}" ic-target="this" ic-replace-target="true" class="document__imported-status document__imported-status--mark-ok">OK?</span>
 {% endif %}

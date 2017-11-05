@@ -19,9 +19,9 @@
                     {% include "documents/includes/tags_form.html" with form=document|tags_form %}
                 </li>
                 <li>
-                    <a ic-target="closest .document" ic-replace-target="true" ic-post-to="{% url "documents:document_image_rotate" pk=document.id angle=90 %}">↪️</a>
+                    <a href="" ic-target="closest .document" ic-replace-target="true" ic-post-to="{% url "documents:document_image_rotate" pk=document.id angle=90 %}">↪️</a>
                     <a href="{% url "admin:documents_document_change" document.id %}">Admin</a>
-                    <a ic-target="closest .document" ic-replace-target="true" ic-post-to="{% url "documents:document_image_rotate" pk=document.id angle=270 %}">↩️</a>
+                    <a href="" ic-target="closest .document" ic-replace-target="true" ic-post-to="{% url "documents:document_image_rotate" pk=document.id angle=270 %}">↩️</a>
                 </li>
             </ul>
         </div>
