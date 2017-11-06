@@ -54,6 +54,7 @@ class Command(BaseCommand):
                 file = File(f)
                 filehash = sha1(file.read()).hexdigest()
                 document = Document.objects.create(owner=self.user, doxieapi_scan_json=scan, file=file, filehash=filehash, source=scanner.name)
+                document.file_thumbnail.generate()
             log.debug("Created Document id {} from {}".format(document.id, scan['name']))
         return True
 
