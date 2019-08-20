@@ -13,7 +13,7 @@ if not os.path.isfile(yml_path):
     raise Exception("Couldn't find '{}'".format(yml_path))
 
 try:
-    with open(yml_path, 'rb') as f:
-        locals().update(yaml.load(f.read()))
+    with open(yml_path, "rb") as f:
+        locals().update(yaml.safe_load(f.read()))
 except:
     raise Exception("Couldn't read/parse '{}'".format(yml_path))
