@@ -28,18 +28,24 @@ class DocumentListView(DocumentOwnerMixin, ListView):
 
     def get_queryset(self):
         user_docs = super().get_queryset()
-        if 'untagged' in self.active_tags:
+        if "untagged" in self.active_tags:
             return user_docs.filter(tags__len=0)
         else:
             return user_docs.filter(tags__contains=self.active_tags)
 
     @cached_property
     def all_tags(self):
-        return sorted({y for x in Document.objects.values_list("tags", flat=True).distinct() for y in x}) + ['untagged']
+        return sorted(
+            {
+                y
+                for x in Document.objects.values_list("tags", flat=True).distinct()
+                for y in x
+            }
+        ) + ["untagged"]
 
     @cached_property
     def active_tags(self):
-        return [t for t in self.request.GET.get('tags', '').split(',') if t]
+        return [t for t in self.request.GET.get("tags", "").split(",") if t]
 
 
 class DocumentListViewAJAX(DocumentListView):
@@ -67,7 +73,7 @@ class DocumentTagsEdit(DocumentOwnerMixin, UpdateView):
 
     @property
     def saved(self):
-        return 'saved' in self.request.GET
+        return "saved" in self.request.GET
 
 
 class DocumentImageRotate(DocumentOwnerMixin, DetailView):
@@ -81,8 +87,8 @@ class DocumentImageRotate(DocumentOwnerMixin, DetailView):
         image = Image.open(document.file)
         image = image.rotate(angle, Image.BICUBIC, True)
 
-        contentfile = ContentFile(b'')
-        image.save(contentfile, 'jpeg')
+        contentfile = ContentFile(b"")
+        image.save(contentfile, "jpeg")
         filepath = document_file_upload_path(document, document.file.name)
         document.file.save(filepath, contentfile, save=True)
 

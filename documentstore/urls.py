@@ -19,8 +19,7 @@ from django.shortcuts import redirect
 from documents.admin import admin_site
 
 urlpatterns = [
-    url(r'^admin/', admin_site.urls),
-    url(r'^documents/', include('documents.urls')),
-
-    url(r'^$', lambda *a, **k: redirect("documents:document_list")),
+    url(r"^admin/", admin_site.urls),
+    url(r"^documents/", include("documents.urls")),
+    url(r"^$", lambda *a, **k: redirect("documents:document_list")),
 ]
