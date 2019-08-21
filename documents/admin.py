@@ -41,7 +41,13 @@ class DocumentAdmin(admin.ModelAdmin):
     list_display = ("imported", "file_thumbnail_img", "imported_ok", "tags")
     list_display_links = ("imported", "file_thumbnail_img")
     list_editable = ("imported_ok", "tags")
-    list_filter = ("source", "imported_ok", "author", DocumentTagListFilter)
+    list_filter = (
+        "source",
+        "imported_ok",
+        "author",
+        "ocr_status",
+        DocumentTagListFilter,
+    )
     date_hierarchy = "imported"
     readonly_fields = ("file_img",)
 

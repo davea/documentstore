@@ -12,3 +12,6 @@ DATABASES:
     default:
         ENGINE: 'django.db.backends.postgresql'
         NAME: 'documentstore'
+
+OCRSDK_PASSWORD: ""
+OCRSDK_APP_ID: ""

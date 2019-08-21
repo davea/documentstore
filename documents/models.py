@@ -86,6 +86,20 @@ class Document(models.Model):
         help_text="Where the physical copy of this document is kept",
     )
 
+    # Fields relating to OCR/searching of this document
+    ocr_status = models.CharField(
+        max_length=16,
+        choices=(
+            ("new", "New"),
+            ("pending", "Pending"),
+            ("complete", "Complete"),
+            ("failed", "Failed"),
+        ),
+        default="new",
+    )
+    ocr_job_id = models.CharField(max_length=128, blank=True, null=True)
+    ocr_text = models.TextField(blank=True, default="")
+
     # Fields specific to documents imported using doxieapi
     doxieapi_scan_json = JSONField(blank=True, null=True)
     imported_ok = models.BooleanField(default=False)
