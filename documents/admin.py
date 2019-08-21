@@ -50,6 +50,7 @@ class DocumentAdmin(admin.ModelAdmin):
     )
     date_hierarchy = "imported"
     readonly_fields = ("file_img",)
+    search_fields = ("ocr_text", "author")
 
     def file_thumbnail_img(self, document):
         if document.file_thumbnail:
