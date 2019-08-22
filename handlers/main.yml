@@ -1,0 +1,25 @@
+- name: restart gunicorn
+  supervisorctl: name=gunicorn state=restarted
+
+- name: restart nginx
+  service: name=nginx state=restarted
+
+- name: manage.py collectstatic
+  become_user: "{{ documentstore.user }}"
+  shell: pipenv run python manage.py collectstatic --noinput
+  args:
+    chdir: "/home/{{ documentstore.user }}/documentstore"
+  environment:
+    DJANGO_SETTINGS_MODULE: documentstore.settings.production
+    LANG: en_GB.UTF-8
+    LC_ALL: en_GB.UTF-8
+
+- name: manage.py migrate
+  become_user: "{{ documentstore.user }}"
+  shell: pipenv run python manage.py migrate
+  args:
+    chdir: "/home/{{ documentstore.user }}/documentstore"
+  environment:
+    DJANGO_SETTINGS_MODULE: documentstore.settings.production
+    LANG: en_GB.UTF-8
+    LC_ALL: en_GB.UTF-8

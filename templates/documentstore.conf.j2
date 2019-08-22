@@ -1,0 +1,39 @@
+upstream app_server {
+    server 127.0.0.1:8000 fail_timeout=0;
+}
+
+server {
+    listen 80 default_server;
+    server_name _;
+
+    keepalive_timeout 5;
+
+    root {{ documentstore.static_root }}/web;
+
+    location /static {
+        alias {{ documentstore.static_root }};
+    }
+
+    location /media {
+        alias {{ documentstore.media_root }};
+    }
+
+    location / {
+        # checks for static file, if not found proxy to app
+        try_files $uri @proxy_to_app;
+    }
+
+    location @proxy_to_app {
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_redirect off;
+
+        proxy_pass   http://app_server;
+    }
+
+    location = /favicon.ico {
+        log_not_found off;
+        access_log off;
+    }
+}

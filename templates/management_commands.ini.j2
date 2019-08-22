@@ -1,0 +1,35 @@
+[program:doxie_import]
+command=/usr/local/bin/pipenv run python manage.py doxie_import {{ documentstore.doxie.import_user }}
+directory=/home/{{ documentstore.user }}/documentstore
+user={{ documentstore.user }}
+autostart=false
+autorestart=false
+startsecs=0
+startretries=2
+environment=PATH="/usr/bin:/usr/local/bin",LC_ALL="en_GB.UTF-8",LANG="en_GB.UTF-8",HOME="/home/{{ documentstore.user }}",USER="{{ homesense_user }}",DJANGO_SETTINGS_MODULE=documentstore.settings.production
+stderr_logfile=/var/log/supervisor/doxie_import.err
+stdout_logfile=/var/log/supervisor/doxie_import.log
+
+[program:ocr_queue_jobs]
+command=/usr/local/bin/pipenv run python manage.py ocr_queue_jobs
+directory=/home/{{ documentstore.user }}/documentstore
+user={{ documentstore.user }}
+autostart=false
+autorestart=false
+startsecs=0
+startretries=2
+environment=PATH="/usr/bin:/usr/local/bin",LC_ALL="en_GB.UTF-8",LANG="en_GB.UTF-8",HOME="/home/{{ documentstore.user }}",USER="{{ homesense_user }}",DJANGO_SETTINGS_MODULE=documentstore.settings.production
+stderr_logfile=/var/log/supervisor/ocr_queue_jobs.err
+stdout_logfile=/var/log/supervisor/ocr_queue_jobs.log
+
+[program:ocr_fetch_results]
+command=/usr/local/bin/pipenv run python manage.py ocr_fetch_results
+directory=/home/{{ documentstore.user }}/documentstore
+user={{ documentstore.user }}
+autostart=false
+autorestart=false
+startsecs=0
+startretries=2
+environment=PATH="/usr/bin:/usr/local/bin",LC_ALL="en_GB.UTF-8",LANG="en_GB.UTF-8",HOME="/home/{{ documentstore.user }}",USER="{{ homesense_user }}",DJANGO_SETTINGS_MODULE=documentstore.settings.production
+stderr_logfile=/var/log/supervisor/ocr_fetch_results.err
+stdout_logfile=/var/log/supervisor/ocr_fetch_results.log

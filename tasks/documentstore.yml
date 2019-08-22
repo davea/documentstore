@@ -1,0 +1,158 @@
+- group:
+    name: "{{ documentstore.group }}"
+
+- user:
+    name: "{{ documentstore.user }}"
+    comment: "Document Store User"
+    group: "{{ documentstore.group }}"
+
+- name: Install required packages
+  pkgng:
+    state: present
+    name:
+      - git
+      - python36
+      - py36-setuptools
+      - py36-pip
+      - nginx-lite
+      # build deps for pillow
+      - lzlib
+      - jpeg-turbo
+      # build deps for psycopg2
+      - postgresql11-client
+
+- name: Install pipenv
+  pip:
+    name: pipenv
+    executable: "/usr/local/bin/pip-3.6"
+    state: present
+
+- name: Create directory structure
+  file:
+    path:
+      - "/home/{{ documentstore.user }}/documentstore"
+      - "{{ documentstore.static_root }}"
+    state: directory
+    owner: "{{ documentstore.user }}"
+    group: "{{ documentstore.group }}"
+
+- name: Fetch code from github
+  become_user: "{{ documentstore.user }}"
+  git:
+    repo: https://github.com/davea/documentstore.git
+    dest: "/home/{{ documentstore.user }}/documentstore"
+    accept_hostkey: yes
+  notify:
+    - restart gunicorn
+    - manage.py collectstatic
+    - manage.py migrate
+  register: reporesult
+
+- name: Set up documentstore pipenv
+  become_user: "{{ documentstore.user }}"
+  shell: pipenv --python 3.6 --bare install --deploy --ignore-pipfile
+  args:
+    chdir: "/home/{{ documentstore.user }}/documentstore"
+  environment:
+    LANG: en_GB.UTF-8
+    LC_ALL: en_GB.UTF-8
+  when: reporesult.changed
+
+- template:
+    src: doxieapi.ini.j2
+    dest: "/home/{{ documentstore.user }}/.doxieapi.ini"
+    owner: "{{ documentstore.user }}"
+    group: "{{ documentstore.group }}"
+    mode: 0600
+  tags: documentstore.config
+  notify:
+    - restart gunicorn
+
+- template:
+    src: config.yml.j2
+    dest: "/home/{{ documentstore.user }}/documentstore/conf/config.yml"
+    owner: "{{ documentstore.user }}"
+    group: "{{ documentstore.group }}"
+    mode: 0600
+  tags: documentstore.config
+  notify:
+    - restart gunicorn
+
+- template:
+    src: pgpass.j2
+    dest: "/home/{{ documentstore.user }}/.pgpass"
+    owner: "{{ documentstore.user }}"
+    group: "{{ documentstore.group }}"
+    mode: 0600
+  tags: documentstore.config
+  notify:
+    - restart gunicorn
+
+- template:
+    src: gunicorn.ini.j2
+    dest: /usr/local/etc/supervisor.d/gunicorn.ini
+  notify:
+    - restart supervisor
+
+- template:
+    src: management_commands.ini.j2
+    dest: /usr/local/etc/supervisor.d/management_commands.ini
+  notify:
+    - restart supervisor
+
+- name: Put nginx configuration in place
+  template:
+    src: nginx.conf.j2
+    dest: /usr/local/etc/nginx/nginx.conf
+    owner: root
+    group: wheel
+    mode: 0644
+  notify:
+    - restart nginx
+  tags:
+    - documentstore.config
+
+- name: Put nginx vhost configuration in place
+  template:
+    src: documentstore.conf.j2
+    dest: /usr/local/etc/nginx/documentstore.conf
+    owner: root
+    group: wheel
+    mode: 0644
+  notify:
+    - restart nginx
+  tags:
+    - documentstore.config
+
+- name: Enable nginx service
+  lineinfile:
+    dest: /etc/rc.conf
+    regexp: ^nginx_enable=
+    line: nginx_enable="YES"
+
+- name: Start nginx
+  service: name=nginx state=started
+
+- name: Set up doxie_import cron job
+  cron:
+    name: Doxie import
+    job: supervisorctl start doxie_import > /dev/null
+    minute: "*/2"
+    hour: "07-22"
+
+- name: Set up ocr queue cron job
+  cron:
+    name: OCR Queue
+    job: supervisorctl start ocr_queue_jobs > /dev/null
+    minute: "*/5"
+    hour: "07-22"
+
+- name: Set up ocr results cron job
+  cron:
+    name: OCR Fetch
+    job: supervisorctl start ocr_fetch_results > /dev/null
+    minute: "2/5"
+    hour: "07-22"
+
+- name: Check cron is running
+  service: name=cron state=started

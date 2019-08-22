@@ -1,0 +1,19 @@
+# Change these when deploying to production!
+SECRET_KEY: "{{ documentstore.secret_key }}"
+ALLOWED_HOSTS:
+{% for host in documentstore.allowed_hosts %}    - "{{ host }}"
+{% endfor %}
+
+STATIC_ROOT: "{{ documentstore.static_root }}"
+MEDIA_ROOT: "{{ documentstore.media_root }}"
+
+DEBUG: false
+
+DATABASES:
+    default:
+        ENGINE: "django.db.backends.postgresql"
+        NAME: "{{ documentstore.database.name }}"
+        HOST: "{{ documentstore.database.host }}"
+
+OCRSDK_PASSWORD: "{{ documentstore.ocrsdk.password }}"
+OCRSDK_APP_ID: "{{ documentstore.ocrsdk.app_id }}"
