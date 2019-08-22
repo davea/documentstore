@@ -1,0 +1,3 @@
+[submodule "ansible-role"]
+	path = ansible-role
+	url = git@github.com:davea/documentstore.git
