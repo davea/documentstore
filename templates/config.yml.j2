@@ -1,8 +1,6 @@
 # Change these when deploying to production!
 SECRET_KEY: "{{ documentstore.secret_key }}"
-ALLOWED_HOSTS:
-{% for host in documentstore.allowed_hosts %}    - "{{ host }}"
-{% endfor %}
+ALLOWED_HOSTS: {{ documentstore.allowed_hosts | to_json }}
 
 STATIC_ROOT: "{{ documentstore.static_root }}"
 MEDIA_ROOT: "{{ documentstore.media_root }}"
