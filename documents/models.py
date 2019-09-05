@@ -27,7 +27,7 @@ def document_file_thumbnail_upload_path(instance, filename=None):
 
 def get_document_upload_path(instance, filename, thumbnail):
     username = instance.owner.username if instance.owner else "nobody"
-    if instance.doxieapi_scan_json:
+    if instance.source_metadata:
         category = "scans"
     elif instance.source == Document._meta.get_field("source").default:
         category = "uploads"
@@ -100,8 +100,8 @@ class Document(models.Model):
     ocr_job_id = models.CharField(max_length=128, blank=True, null=True)
     ocr_text = models.TextField(blank=True, default="")
 
-    # Fields specific to documents imported using doxieapi
-    doxieapi_scan_json = JSONField(blank=True, null=True)
+    # Fields relating to the source metadata of this document
+    source_metadata = JSONField(blank=True, null=True)
     imported_ok = models.BooleanField(default=False)
 
     file_thumbnail = ImageSpecField(

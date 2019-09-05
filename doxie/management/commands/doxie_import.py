@@ -30,11 +30,11 @@ class Command(BaseCommand):
             log.debug(scanner.name)
             for scan in scanner.scans:
                 if not Document.objects.filter(
-                    owner=self.user, doxieapi_scan_json=scan
+                    owner=self.user, source_metadata=scan
                 ).exists():
                     self.import_new_scan(scanner, scan)
                 elif Document.objects.filter(
-                    owner=self.user, doxieapi_scan_json=scan, imported_ok=True
+                    owner=self.user, source_metadata=scan, imported_ok=True
                 ).exists():
                     log.debug(
                         "{} has been imported and marked as OK by {}, will delete".format(
@@ -72,7 +72,7 @@ class Command(BaseCommand):
                 filehash = sha1(file.read()).hexdigest()
                 document = Document.objects.create(
                     owner=self.user,
-                    doxieapi_scan_json=scan,
+                    source_metadata=scan,
                     file=file,
                     filehash=filehash,
                     source=scanner.name,
