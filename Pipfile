@@ -15,6 +15,7 @@ pillow = "*"
 "django-mathfilters" = "*"
 "django-imagekit" = "*"
 dropbox = "*"
+django-q = "*"
 
 [dev-packages]
 honcho = "*"

@@ -6,6 +6,7 @@ from django.http import HttpResponse, Http404, HttpResponseBadRequest
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
+from django_q.tasks import async_task
 
 from .decorators import require_headers
 
@@ -36,4 +37,5 @@ def dropbox_hook(request):
     if not valid_signature:
         return HttpResponseBadRequest()
 
+    async_task("django.core.management.call_command", "dropbox_import")
     return HttpResponse("thanks")

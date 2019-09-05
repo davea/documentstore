@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "query_parameters",
     "mathfilters",
     "imagekit",
+    "django_q",
     "documents",
     "doxie",
     "hooks",
@@ -125,3 +126,12 @@ LOGGING = {
 
 LOGIN_URL = "/admin/login/"
 LOGIN_REDIRECT_URL = "/"
+
+Q_CLUSTER = {
+    "name": "DjangORM",
+    "orm": "default",
+    "workers": 1,
+    "timeout": 90,
+    "retry": 120,
+    "poll": 5,
+}
