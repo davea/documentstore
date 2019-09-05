@@ -8,6 +8,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.files import File
 from django.core.management.base import BaseCommand, CommandError
+from django_q.tasks import async_task
 from dropbox import Dropbox
 
 from documents.models import Document
@@ -17,6 +18,7 @@ log = logging.getLogger(__name__)
 
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
+        run_ocr = False
         for config in settings.DROPBOX["users"]:
             user = self.get_user(config["username"])
             dropbox = Dropbox(config["auth_token"])
@@ -57,6 +59,10 @@ class Command(BaseCommand):
                             log.debug(
                                 f"Created Document id {document.id} from {entry.id} ({entry.path_display})"
                             )
+                            if "ocr" in folder["tags"]:
+                                run_ocr = True
+        if run_ocr:
+            async_task("django.core.management.call_command", "ocr_queue_jobs")
 
     def get_user(self, username):
         UserModel = get_user_model()

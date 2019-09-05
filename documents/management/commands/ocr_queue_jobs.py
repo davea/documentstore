@@ -1,9 +1,12 @@
+from datetime import timedelta
 from logging import getLogger
 
 import requests
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
+from django.utils import timezone
+from django_q.tasks import schedule
 
 from documents.models import Document
 
@@ -12,10 +15,19 @@ log = getLogger(__name__)
 
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
+        schedule_fetch = False
         for document in Document.objects.filter(
             ocr_status="new", tags__contains=["ocr"]
         ):
             enqueue_document(document)
+            schedule_fetch = True
+        if schedule_fetch:
+            schedule(
+                "django.core.management.call_command",
+                "ocr_fetch_results",
+                schedule_type="O",
+                next_run=timezone.now() + timedelta(minutes=5),
+            )
 
 
 def enqueue_document(document):
