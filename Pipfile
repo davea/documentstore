@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-
 doxieapi = "*"
 click = "*"
 django = "*"
@@ -15,10 +14,9 @@ pillow = "*"
 "django-query-parameters" = "*"
 "django-mathfilters" = "*"
 "django-imagekit" = "*"
-
+dropbox = "*"
 
 [dev-packages]
-
 honcho = "*"
 pylint = "*"
 pytest = "*"
