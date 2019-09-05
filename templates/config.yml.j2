@@ -17,3 +17,5 @@ DATABASES:
 
 OCRSDK_PASSWORD: "{{ documentstore.ocrsdk.password }}"
 OCRSDK_APP_ID: "{{ documentstore.ocrsdk.app_id }}"
+
+DROPBOX: {{ documentstore.dropbox | to_json }}

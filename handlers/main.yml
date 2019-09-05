@@ -1,6 +1,9 @@
 - name: restart gunicorn
   supervisorctl: name=gunicorn state=restarted
 
+- name: restart djangoq
+  supervisorctl: name=djangoq state=restarted
+
 - name: restart nginx
   service: name=nginx state=restarted
 

@@ -42,10 +42,12 @@
     repo: https://github.com/davea/documentstore.git
     dest: "/home/{{ documentstore.user }}/documentstore"
     accept_hostkey: yes
+    recursive: no
   notify:
-    - restart gunicorn
     - manage.py collectstatic
     - manage.py migrate
+    - restart gunicorn
+    - restart djangoq
   register: reporesult
 
 - name: Set up documentstore pipenv
@@ -67,6 +69,7 @@
   tags: documentstore.config
   notify:
     - restart gunicorn
+    - restart djangoq
 
 - template:
     src: config.yml.j2
@@ -77,6 +80,7 @@
   tags: documentstore.config
   notify:
     - restart gunicorn
+    - restart djangoq
 
 - template:
     src: pgpass.j2
@@ -87,16 +91,11 @@
   tags: documentstore.config
   notify:
     - restart gunicorn
+    - restart djangoq
 
 - template:
-    src: gunicorn.ini.j2
-    dest: /usr/local/etc/supervisor.d/gunicorn.ini
-  notify:
-    - restart supervisor
-
-- template:
-    src: management_commands.ini.j2
-    dest: /usr/local/etc/supervisor.d/management_commands.ini
+    src: documentstore_supervisor.ini.j2
+    dest: /usr/local/etc/supervisor.d/documentstore_supervisor.ini
   notify:
     - restart supervisor
 

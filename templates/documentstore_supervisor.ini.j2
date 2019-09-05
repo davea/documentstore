@@ -1,3 +1,27 @@
+[program:gunicorn]
+command=/usr/local/bin/pipenv run gunicorn -w 2 -b 127.0.0.1:8000 documentstore.wsgi
+directory=/home/{{ documentstore.user }}/documentstore
+user={{ documentstore.user }}
+autostart=true
+autorestart=true
+startsecs=5
+startretries=1000
+environment=PATH="/usr/bin:/usr/local/bin",LC_ALL="en_GB.UTF-8",LANG="en_GB.UTF-8",HOME="/home/{{ documentstore.user }}",USER="{{ homesense_user }}",DJANGO_SETTINGS_MODULE=documentstore.settings.production
+stderr_logfile=/var/log/supervisor/gunicorn.err
+stdout_logfile=/var/log/supervisor/gunicorn.log
+
+[program:djangoq]
+command=/usr/local/bin/pipenv run python manage.py qcluster
+directory=/home/{{ documentstore.user }}/documentstore
+user={{ documentstore.user }}
+autostart=true
+autorestart=true
+startsecs=5
+startretries=1000
+environment=PATH="/usr/bin:/usr/local/bin",LC_ALL="en_GB.UTF-8",LANG="en_GB.UTF-8",HOME="/home/{{ documentstore.user }}",USER="{{ homesense_user }}",DJANGO_SETTINGS_MODULE=documentstore.settings.production
+stderr_logfile=/var/log/supervisor/djangoq.err
+stdout_logfile=/var/log/supervisor/djangoq.log
+
 [program:doxie_import]
 command=/usr/local/bin/pipenv run python manage.py doxie_import {{ documentstore.doxie.import_user }}
 directory=/home/{{ documentstore.user }}/documentstore
