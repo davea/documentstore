@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "imagekit",
     "documents",
     "doxie",
+    "hooks",
 ]
 
 MIDDLEWARE = [

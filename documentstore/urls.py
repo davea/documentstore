@@ -21,5 +21,6 @@ from documents.admin import admin_site
 urlpatterns = [
     url(r"^admin/", admin_site.urls),
     url(r"^documents/", include("documents.urls")),
+    url(r"^hooks/", include("hooks.urls")),
     url(r"^$", lambda *a, **k: redirect("documents:document_list")),
 ]
