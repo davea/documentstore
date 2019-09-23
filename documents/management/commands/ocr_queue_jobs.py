@@ -17,7 +17,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         schedule_fetch = False
         for document in Document.objects.filter(
-            ocr_status="new", tags__contains=["ocr"]
+            ocr_status="new", tags__contains=["ocr"], imported_ok=True
         ):
             enqueue_document(document)
             schedule_fetch = True

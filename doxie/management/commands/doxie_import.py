@@ -76,6 +76,7 @@ class Command(BaseCommand):
                     file=file,
                     filehash=filehash,
                     source=scanner.name,
+                    tags=settings.DOXIE["tags"],
                 )
                 document.file_thumbnail.generate()
             log.debug(
