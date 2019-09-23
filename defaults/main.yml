@@ -24,3 +24,17 @@ documentstore:
     address: "00:11:22:33:44:55"
     password: "my doxie password"
     import_user: bob
+    tags:
+      - ocr
+
+  dropbox:
+    app_key: mydropboxkey
+    app_secret: mydropboxsecret
+
+    users:
+      - username: user1
+        auth_token: mydropboxauthtoken
+        folders:
+          - path: /Documents
+            tags:
+              - ocr
