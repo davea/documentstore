@@ -41,7 +41,22 @@ def enqueue_document(document):
             "profile": "textExtraction",
         },
         auth=(settings.OCRSDK_APP_ID, settings.OCRSDK_PASSWORD),
-    ).json()
+    )
+
+    if not response.ok:
+        document.ocr_status = "failed"
+        try:
+            document.ocr_job_id = response.json()["error"]["code"]
+        except (KeyError, TypeError, ValueError):
+            pass
+        log.warning(
+            "Couldn't enqueue document {} for OCR: {}".format(
+                document.id, document.ocr_job_id
+            )
+        )
+        document.save()
+        return
+
     status_map = {
         "Submitted": "pending",
         "Queued": "pending",
@@ -51,8 +66,9 @@ def enqueue_document(document):
         "Deleted": "failed",
         "NotEnoughCredits": "failed",
     }
-    document.ocr_job_id = response["taskId"]
-    document.ocr_status = status_map.get(response["status"])
+    result = response.json()
+    document.ocr_job_id = result["taskId"]
+    document.ocr_status = status_map.get(result["status"])
     document.save()
     log.debug(
         "Document {} queued as task ID {}, status {}".format(
