@@ -3,6 +3,8 @@ from logging import getLogger
 from django.contrib import admin
 from django.utils.html import format_html
 
+from django_q.tasks import async_task
+
 from .models import Document
 
 log = getLogger(__name__)
@@ -51,6 +53,7 @@ class DocumentAdmin(admin.ModelAdmin):
     date_hierarchy = "imported"
     readonly_fields = ("file_img",)
     search_fields = ("ocr_text", "author")
+    actions = ["reset_ocr_status"]
 
     def file_thumbnail_img(self, document):
         if document.file_thumbnail:
@@ -70,6 +73,16 @@ class DocumentAdmin(admin.ModelAdmin):
             )
 
     file_img.short_description = "Full-size Image"
+
+    def reset_ocr_status(self, request, queryset):
+        count = queryset.update(ocr_status="new", ocr_job_id=None, ocr_text="")
+        self.message_user(
+            request,
+            f"{count} document{' was' if count == 1 else 's were'} updated and will be OCRd shortly.",
+        )
+        async_task("django.core.management.call_command", "ocr_queue_jobs")
+
+    reset_ocr_status.short_description = "Reset OCR status to ‘new’"
 
 
 admin_site.register(Document, DocumentAdmin)
