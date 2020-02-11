@@ -1,28 +1,17 @@
-################################################################################
-# This requirements file has been automatically generated from `Pipfile` with
-# `pipenv-to-requirements`
-#
-#
-# This has been done to maintain backward compatibility with tools and services
-# that do not support `Pipfile` yet.
-#
-# Do NOT edit it directly, use `pipenv install [-d]` to modify `Pipfile` and
-# `Pipfile.lock` and then regenerate `requirements*.txt`.
-################################################################################
-
-arrow==0.15.4
+-i https://pypi.python.org/simple/
+arrow==0.15.5
 asgiref==3.2.3
-blessed==1.16.1
+blessed==1.17.2
 certifi==2019.11.28
 chardet==3.0.4
 click==7.0
 django-appconf==1.0.3
 django-imagekit==4.0.2
 django-mathfilters==0.4.0
-django-picklefield==2.0
+django-picklefield==2.1.1
 django-q==1.0.2
 django-query-parameters==0.2.3
-django==3.0
+django==3.0.3
 doxieapi==0.0.2
 dropbox==9.4.0
 gunicorn==20.0.4
@@ -34,7 +23,7 @@ python-dateutil==2.8.1
 pytz==2019.3
 pyyaml==5.2
 requests==2.22.0
-six==1.13.0
+six==1.14.0
 sqlparse==0.3.0
-urllib3==1.25.7
-wcwidth==0.1.7
+urllib3==1.25.8
+wcwidth==0.1.8
