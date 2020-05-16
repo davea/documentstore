@@ -11,9 +11,9 @@
     state: present
     name:
       - git
-      - python36
-      - py36-setuptools
-      - py36-pip
+      - python37
+      - py37-setuptools
+      - py37-pip
       - nginx-lite
       # build deps for pillow
       - lzlib
@@ -24,7 +24,7 @@
 - name: Install pipenv
   pip:
     name: pipenv
-    executable: "/usr/local/bin/pip-3.6"
+    executable: "/usr/local/bin/pip-3.7"
     state: present
 
 - name: Create directory structure
@@ -52,7 +52,7 @@
 
 - name: Set up documentstore pipenv
   become_user: "{{ documentstore.user }}"
-  shell: pipenv --python 3.6 --bare install --deploy --ignore-pipfile
+  shell: pipenv --python 3.7 --bare install --deploy --ignore-pipfile
   args:
     chdir: "/home/{{ documentstore.user }}/documentstore"
   environment:
