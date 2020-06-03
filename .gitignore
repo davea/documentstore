@@ -5,3 +5,4 @@ conf/config.yml
 .vscode
 Procfile
 Makefile
+.envrc
