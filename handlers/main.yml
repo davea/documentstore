@@ -26,3 +26,5 @@
     DJANGO_SETTINGS_MODULE: documentstore.settings.production
     LANG: en_GB.UTF-8
     LC_ALL: en_GB.UTF-8
+  register: migrate_result
+  changed_when: "'No migrations to apply.' not in migrate_result.stdout"
