@@ -2,7 +2,7 @@ import os
 from logging import getLogger
 
 from django.db import models
-from django.contrib.postgres.fields import JSONField, ArrayField
+from django.contrib.postgres.fields import ArrayField
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.utils.text import slugify
@@ -101,7 +101,7 @@ class Document(models.Model):
     ocr_text = models.TextField(blank=True, default="")
 
     # Fields relating to the source metadata of this document
-    source_metadata = JSONField(blank=True, null=True)
+    source_metadata = models.JSONField(blank=True, null=True)
     imported_ok = models.BooleanField(default=False)
 
     file_thumbnail = ImageSpecField(
