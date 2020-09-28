@@ -117,3 +117,10 @@ class Document(models.Model):
     def save(self, *args, **kwargs):
         self.tags = sorted(self.tags)
         return super().save(*args, **kwargs)
+
+    @property
+    def file_thumbnail_ok(self):
+        try:
+            return self.file_thumbnail.url is not None and self.file_thumbnail.width
+        except Exception:
+            return false
