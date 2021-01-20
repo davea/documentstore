@@ -116,11 +116,11 @@
         },
         "doxieapi": {
             "hashes": [
-                "sha256:5637a150d066fc22fdc12b1711ee819317c69993d8a0c41bb75c9b2b58458466",
-                "sha256:db1d9d7c6f942f3e7ce2316d21dd8d1f4730768b3069475a13f99f006b3f328b"
+                "sha256:61696d3ae73be4e016acfed5ae3e9137c8880e2240999fc79397ab568c964acd",
+                "sha256:a15e1c2ea091b268ce49379bda40e2fb7264c5cd8390a7b14b207eedf5e966e0"
             ],
             "index": "pypi",
-            "version": "==0.1.1"
+            "version": "==0.1.2"
         },
         "dropbox": {
             "hashes": [
