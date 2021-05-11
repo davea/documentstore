@@ -16,6 +16,7 @@ pillow = "*"
 "django-imagekit" = "*"
 dropbox = "*"
 django-q = "*"
+typing-extensions = "*"
 
 [dev-packages]
 honcho = "*"
