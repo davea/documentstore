@@ -3,10 +3,22 @@ body {
     color: #444;
     font-family: Helvetica, sans-serif;
     font-weight: 300;
+    margin: 0;
 }
 
 a[href] {
     cursor: pointer;
+}
+
+.documents h2 {
+    clear: both;
+    position: sticky;
+    top: 0;
+    margin: 0;
+    padding: 0.5em;
+    background-color: #eee;
+    box-shadow: 0 0 5px silver;
+    z-index: 100;
 }
 
 .document {
@@ -36,7 +48,7 @@ a[href] {
 }
 
 .document__imported-status--mark-ok {
-  background-color: #F06292;
+    background-color: #F06292;
 }
 
 .document__missing-thumbnail {
@@ -57,7 +69,8 @@ a[href] {
     background-color: rgba(240, 240, 240, 0.9);
 }
 
-.document:hover .document__actions, .document:hover .document__imported-status {
+.document:hover .document__actions,
+.document:hover .document__imported-status {
     display: inline-block;
 }
 
@@ -68,7 +81,8 @@ a[href] {
     text-align: center;
 }
 
-.document__actions a, .document__actions span {
+.document__actions a,
+.document__actions span {
     display: inline-block;
     padding: 0.75em;
     text-transform: lowercase;
@@ -82,6 +96,7 @@ a[href] {
 .document__tags_form--saved input[type=text] {
     background-color: rgb(224, 254, 214);
 }
+
 .tags {
     padding: 0.5em;
     margin: 0;

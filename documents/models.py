@@ -123,4 +123,8 @@ class Document(models.Model):
         try:
             return self.file_thumbnail.url is not None and self.file_thumbnail.width
         except Exception:
-            return false
+            return False
+
+    @property
+    def date_for_grouping(self):
+        return (self.imported.year, self.imported.strftime("%B"))

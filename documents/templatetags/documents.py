@@ -35,3 +35,13 @@ def tags_form(document):
     Returns a forms.DocumentTagsForm bound to the given Document
     """
     return DocumentTagsForm(instance=document)
+
+
+@register.simple_tag(takes_context=True)
+def set_forloop_prev_next(context, items):
+    forloop = context["forloop"]
+    if not forloop["first"]:
+        forloop["prev"] = items[forloop["counter0"] - 1]
+    if not forloop["last"]:
+        forloop["next"] = items[forloop["counter0"] + 1]
+    return ""

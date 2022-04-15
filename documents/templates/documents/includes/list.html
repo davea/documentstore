@@ -1,3 +1,8 @@
+{% load documents %}
 {% for document in document_list %}
+    {% set_forloop_prev_next document_list %}
+    {% if forloop.prev.date_for_grouping != document.date_for_grouping %}
+        <h2>{{ document.date_for_grouping.1 }} {{ document.date_for_grouping.0 }}</h2>
+    {% endif %}
     {% include "documents/includes/document.html" %}
 {% endfor %}
