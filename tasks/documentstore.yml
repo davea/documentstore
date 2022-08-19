@@ -11,20 +11,20 @@
     state: present
     name:
       - git
-      - python37
-      - py37-setuptools
-      - py37-pip
-      - nginx-lite
+      - python39
+      - py39-setuptools
+      - py39-pip
+      - nginx
       # build deps for pillow
       - lzlib
       - jpeg-turbo
       # build deps for psycopg2
-      - postgresql11-client
+      - postgresql14-client
 
 - name: Install pipenv
   pip:
     name: pipenv
-    executable: "/usr/local/bin/pip-3.7"
+    executable: "/usr/local/bin/pip-3.9"
     state: present
 
 - name: Create directory structure
@@ -52,10 +52,11 @@
 
 - name: Set up documentstore pipenv
   become_user: "{{ documentstore.user }}"
-  shell: pipenv --python 3.7 --bare install --deploy --ignore-pipfile
+  shell: pipenv sync
   args:
     chdir: "/home/{{ documentstore.user }}/documentstore"
   environment:
+    PATH: /sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin
     LANG: en_GB.UTF-8
     LC_ALL: en_GB.UTF-8
   when: reporesult.changed
