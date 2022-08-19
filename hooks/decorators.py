@@ -12,8 +12,9 @@ def require_headers(headers_dict):
                 if request.headers.get(header) != value:
                     response = HttpResponseBadRequest()
                     log_response(
-                        "Header Value Not Allowed (%s): %s",
+                        "Header Value Not Allowed (%s, value '%s') for path %s",
                         header,
+                        request.headers.get(header),
                         request.path,
                         response=response,
                         request=request,
