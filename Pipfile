@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 doxieapi = "*"
 click = "*"
-django = "*"
+django = "<4"
 "psycopg2-binary" = "*"
 pyyaml = "*"
 gunicorn = "*"
