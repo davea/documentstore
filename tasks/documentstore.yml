@@ -11,9 +11,9 @@
     state: present
     name:
       - git
-      - python39
-      - py39-setuptools
-      - py39-pip
+      - python311
+      - py311-setuptools
+      - py311-pip
       - nginx
       # build deps for pillow
       - lzlib
@@ -24,7 +24,7 @@
 - name: Install pipenv
   pip:
     name: pipenv
-    executable: "/usr/local/bin/pip-3.9"
+    executable: "/usr/local/bin/pip-3.11"
     state: present
 
 - name: Create directory structure
